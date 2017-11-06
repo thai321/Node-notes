@@ -1,5 +1,7 @@
 {>"layout" /}
 
 {<body}
-This is Index
+  {#recipes}
+    {name}
+  {/recipes}
 {/body}
