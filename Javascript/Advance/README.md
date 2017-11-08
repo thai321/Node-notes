@@ -170,3 +170,76 @@ function goo() {
 }
 goo(); // 1
 ```
+
+- What is IIFE and why might you use it?
+  - IIFE: stands for Immediately Invoke function expression
+
+
+```js
+// main.js
+var thing = {'hello': 'main'};
+console.log("main: ", thing);
+```
+
+```js
+// other.js
+var thing = {'hello': 'other'};
+console.log('other: ', thing );
+```
+
+```js
+// If type 'thing', what is going to print out?
+thing // Object {hello: "other"}
+```
+
+
+
+```js
+// main.js
+var thing = {'hello': 'main'};
+console.log("main: ", thing);
+```
+
+```js
+// other.js
+function other() {
+  var thing = {'hello': 'other'};
+  console.log('other: ', thing );
+}
+other();
+
+
+// OR
+
+(function() {
+  var thing = {'hello': 'other'};
+  console.log('other: ', thing );
+})();
+```
+
+```js
+// If type 'thing', what is going to print out?
+thing // Object {main: "main"}
+```
+```js
+
+// main.js
+(function() {
+  var thing = {'main': 'main'};
+  console.log('main:', thing);
+})();
+
+
+// other.js
+(function() {
+  var thing = {'hello': 'other'};
+  console.log('other: ', thing );
+})();
+
+
+// index.js
+main: Object {hello: "main"}
+other: Object {hello: "other"}
+> thing // error: thing is not defined(...)
+```
+
