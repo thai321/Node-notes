@@ -8,35 +8,52 @@
 //   anagrams('RAIL! SAFETY!', 'fairy tales') --> True
 //   anagrams('Hi there', 'Bye there') --> False
 
-// O(m + n)
+// O(nlog(n) + mlog(m))
 //                    n      m
 function anagrams(stringA, stringB) {
-  const SPECIAL = ['!', '?', '.', ',', "'", '"', ' '];
-  const hash = {};
+  return cleanString(stringA) === cleanString(stringB);
+}
 
-  // O(n)
-  for (let char of stringA) {
-    if (!SPECIAL.includes(char)) {
-      if (!hash[char]) {
-        hash[char] = 1;
-      } else {
-        hash[char]++;
-      }
-    }
-  }
-
-  // O(m)
-  for (let char of stringB) {
-    if (!SPECIAL.includes(char)) {
-      if (!hash[char] && hash[char] <= 0) {
-        return false;
-      }
-      hash[char]--;
-    }
-  }
-
-  // O(n)
-  return Object.values(hash).every(n => n === 0);
+// O(klog(k))
+//                    k
+function cleanString(str) {
+  return str
+    .replace(/[^\w]/g, '')
+    .toLowerCase()
+    .split('')
+    .sort()
+    .join();
 }
 
 module.exports = anagrams;
+
+// O(n + m)
+//                    n      m
+// function anagrams(stringA, stringB) {
+//   const SPECIAL = ['!', '?', '.', ',', "'", '"', ' '];
+//   const hash = {};
+//
+//   // O(n)
+//   for (let char of stringA) {
+//     if (!SPECIAL.includes(char)) {
+//       if (!hash[char]) {
+//         hash[char] = 1;
+//       } else {
+//         hash[char]++;
+//       }
+//     }
+//   }
+//
+//   // O(m)
+//   for (let char of stringB) {
+//     if (!SPECIAL.includes(char)) {
+//       if (!hash[char] && hash[char] <= 0) {
+//         return false;
+//       }
+//       hash[char]--;
+//     }
+//   }
+//
+//   // O(n)
+//   return Object.values(hash).every(n => n === 0);
+// }
