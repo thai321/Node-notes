@@ -8,6 +8,35 @@
 //   anagrams('RAIL! SAFETY!', 'fairy tales') --> True
 //   anagrams('Hi there', 'Bye there') --> False
 
-function anagrams(stringA, stringB) {}
+// O(m + n)
+//                    n      m
+function anagrams(stringA, stringB) {
+  const SPECIAL = ['!', '?', '.', ',', "'", '"', ' '];
+  const hash = {};
+
+  // O(n)
+  for (let char of stringA) {
+    if (!SPECIAL.includes(char)) {
+      if (!hash[char]) {
+        hash[char] = 1;
+      } else {
+        hash[char]++;
+      }
+    }
+  }
+
+  // O(m)
+  for (let char of stringB) {
+    if (!SPECIAL.includes(char)) {
+      if (!hash[char] && hash[char] <= 0) {
+        return false;
+      }
+      hash[char]--;
+    }
+  }
+
+  // O(n)
+  return Object.values(hash).every(n => n === 0);
+}
 
 module.exports = anagrams;
