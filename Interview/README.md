@@ -1,4 +1,4 @@
-[algoCast]: Interview/README.md
+[algoCast]: AlgoCasts/README.md
 
 # Interview Pratices
 - [Algo Cast][algoCast]
