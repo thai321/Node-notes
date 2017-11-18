@@ -220,3 +220,160 @@ function fizzBuzz(n) {
 module.exports = fizzBuzz;
 
 ```
+-------
+
+## Chunk
+
+```js
+// --- Directions
+// Given an array and chunk size, divide the array into many subarrays
+// where each subarray is of length size
+// --- Examples
+// chunk([1, 2, 3, 4], 2) --> [[ 1, 2], [3, 4]]
+// chunk([1, 2, 3, 4, 5], 2) --> [[ 1, 2], [3, 4], [5]]
+// chunk([1, 2, 3, 4, 5, 6, 7, 8], 3) --> [[ 1, 2, 3], [4, 5, 6], [7, 8]]
+// chunk([1, 2, 3, 4, 5], 4) --> [[ 1, 2, 3, 4], [5]]
+// chunk([1, 2, 3, 4, 5], 10) --> [[ 1, 2, 3, 4, 5]]
+
+function chunk(array, size) {
+  const result = [];
+  let i = 0;
+
+  while (i < array.length) {
+    const subArray = array.slice(i, i + size);
+    result.push(subArray);
+    i = i + size;
+  }
+
+  return result;
+}
+
+module.exports = chunk;
+
+function chunk(array, size) {
+  const result = [];
+  let i = 0;
+
+  while (i < array.length) {
+    const subArray = [];
+    let j = 1;
+    while (j <= size && i < array.length) {
+      subArray.push(array[i]);
+      i++;
+      j++;
+    }
+
+    result.push(subArray);
+  }
+
+  return result;
+}
+
+```
+-------
+
+## Anagram
+
+```js
+// --- Directions
+// Check to see if two provided strings are anagrams of eachother.
+// One string is an anagram of another if it uses the same characters
+// in the same quantity. Only consider characters, not spaces
+// or punctuation.  Consider capital letters to be the same as lower case
+// --- Examples
+//   anagrams('rail safety', 'fairy tales') --> True
+//   anagrams('RAIL! SAFETY!', 'fairy tales') --> True
+//   anagrams('Hi there', 'Bye there') --> False
+
+// O(nlog(n) + mlog(m))
+//                    n      m
+function anagrams(stringA, stringB) {
+  return cleanString(stringA) === cleanString(stringB);
+}
+
+// O(klog(k))
+//                    k
+function cleanString(str) {
+  return str
+    .replace(/[^\w]/g, '')
+    .toLowerCase()
+    .split('')
+    .sort()
+    .join();
+}
+
+module.exports = anagrams;
+
+// O(n + m)
+//                   n      m
+function anagrams(stringA, stringB) {
+  const SPECIAL = ['!', '?', '.', ',', "'", '"', ' '];
+  const hash = {};
+
+  // O(n)
+  for (let char of stringA) {
+    if (!SPECIAL.includes(char)) {
+      if (!hash[char]) {
+        hash[char] = 1;
+      } else {
+        hash[char]++;
+      }
+    }
+  }
+
+  // O(m)
+  for (let char of stringB) {
+    if (!SPECIAL.includes(char)) {
+      if (!hash[char] && hash[char] <= 0) {
+        return false;
+      }
+      hash[char]--;
+    }
+  }
+
+  // O(n)
+  return Object.values(hash).every(n => n === 0);
+}
+```
+
+------
+
+## Capitalize
+
+```js
+// --- Directions
+// Write a function that accepts a string.  The function should
+// capitalize the first letter of each word in the string then
+// return the capitalized string.
+// --- Examples
+//   capitalize('a short sentence') --> 'A Short Sentence'
+//   capitalize('a lazy fox') --> 'A Lazy Fox'
+//   capitalize('look, it is working!') --> 'Look, It Is Working!'
+
+function capitalize(str) {
+  let result = str[0].toUpperCase();
+
+  for (let i = 1; i < str.length; i++) {
+    if (str[i - 1] === ' ') {
+      result += str[i].toUpperCase();
+    } else {
+      result += str[i];
+    }
+  }
+
+  return result;
+}
+
+module.exports = capitalize;
+
+function capitalize(str) {
+  const result = [];
+
+  str.split(' ').forEach(word => {
+    result.push(word[0].toUpperCase() + word.slice(1));
+  });
+
+  return result.join(' ');
+}
+
+```
