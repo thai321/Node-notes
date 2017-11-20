@@ -1037,7 +1037,7 @@ module.exports = midpoint;
 
 ----
 
-## Circular
+## Circular LinkedList
 
 ```js
 // --- Directions
