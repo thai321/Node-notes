@@ -14,6 +14,41 @@
 
 const Stack = require('./stack');
 
-class Queue {}
+class Queue {
+  constructor() {
+    this.stackOne = new Stack();
+    this.stackTwo = new Stack();
+  }
+
+  add(record) {
+    this.stackOne.push(record);
+  }
+
+  remove() {
+    if (this.stackTwo.peek()) {
+      return this.stackTwo.pop();
+    } else {
+      this.queueify();
+    }
+
+    return this.stackTwo.pop();
+  }
+
+  peek() {
+    if (this.stackTwo.peek()) {
+      return this.stackTwo.peek();
+    } else {
+      this.queueify();
+    }
+
+    return this.stackTwo.peek();
+  }
+
+  queueify() {
+    while (this.stackOne.peek()) {
+      this.stackTwo.push(this.stackOne.pop());
+    }
+  }
+}
 
 module.exports = Queue;
