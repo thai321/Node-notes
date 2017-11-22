@@ -8,7 +8,9 @@
 [kangaroo]: Implementation/Kangaroo.rb
 [bt2sets]: Implementation/Between_Two_Sets.rb
 [breaking-record]: Implementation/Breaking_the_Records.rb
+[birthday-chocolate]: Implementation/Birthday_Chocolate.rb
 ## Implementation
 - [Kangaroo][kangaroo]
 - [Between 2 Sets][bt2sets]
 - [Breaking the Record][breaking-record]
+- [Birthday Chocolate][birthday-chocolate]
