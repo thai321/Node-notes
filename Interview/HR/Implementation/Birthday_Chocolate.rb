@@ -8,6 +8,7 @@
 
 #!/bin/ruby
 
+# O(n)
 def solve(n, s, d, m)
   # Complete this function
   records = s;
