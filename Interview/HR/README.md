@@ -12,6 +12,7 @@
 [divisible-sum-pairs]: Implementation/Divisible_Sum_Pairs.rb
 [migratoryBirds]: Implementation/Migratory_Birds.rb
 [Grading-students]: Implementation/Grading_Students.rb
+[Bon_appetit]: Implementation/Bon_Appetit.rb
 ## Implementation
 - [Grading Students][Grading-students]
 - [Kangaroo][kangaroo]
@@ -20,3 +21,4 @@
 - [Birthday Chocolate][birthday-chocolate]
 - [Divisible Sum Pairs][divisible-sum-pairs]
 - [Migratory Birds][migratoryBirds]
+- [Bon Appetit][Bon_appetit]
