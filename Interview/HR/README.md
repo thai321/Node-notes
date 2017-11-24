@@ -22,3 +22,9 @@
 - [Divisible Sum Pairs][divisible-sum-pairs]
 - [Migratory Birds][migratoryBirds]
 - [Bon Appetit][Bon_appetit]
+
+
+[left-rotation]: Cracking-the-Coding-Interview/left_rotation.rb
+
+## Cracking the Coding Interview
+- [Left Rotation][left-rotation]
