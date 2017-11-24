@@ -29,9 +29,11 @@
 [making-anagrams]: Cracking-the-Coding-Interview/making_anagrams.rb
 [detect-a-cycle]: Cracking-the-Coding-Interview/detect_a_cycle.py
 [hash-ransom-note]: Cracking-the-Coding-Interview/ransom_note.rb
+[balance-brackets]: Cracking-the-Coding-Interview/balance_brackets.rb
 ## Cracking the Coding Interview
 - [Left Rotation][left-rotation]
 - [Strings: Making Anagrams][making-anagrams]
 - [Hash Tables: Ransom Note][hash-ransom-note]
 - [Detect a Cycle][detect-a-cycle]
+- [Stacks: Balanced Brackets][balance-brackets]
 - [Trees: Is This a Binary Search Tree?][check-BST]
