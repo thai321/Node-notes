@@ -26,6 +26,8 @@
 
 [left-rotation]: Cracking-the-Coding-Interview/left_rotation.rb
 [check-BST]: Cracking-the-Coding-Interview/check_bst.py
+[making-anagrams]: Cracking-the-Coding-Interview/making_anagrams.rb
 ## Cracking the Coding Interview
 - [Left Rotation][left-rotation]
+- [Strings: Making Anagrams][making-anagrams]
 - [Trees: Is This a Binary Search Tree?][check-BST]
