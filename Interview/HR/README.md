@@ -32,6 +32,8 @@
 [balance-brackets]: Cracking-the-Coding-Interview/balance_brackets.rb
 [heap-median]: Cracking-the-Coding-Interview/heap-median.java
 [dfs-connected-cell]: Cracking-the-Coding-Interview/dfs_connected_cells.rb
+[shortest-in-graph]: Cracking-the-Coding-Interview/shortest_in_graph.java
+[bit-manipulation]: Cracking-the-Coding-Interview/bit_manipulation.rb
 ## Cracking the Coding Interview
 - [Left Rotation][left-rotation]
 - [Strings: Making Anagrams][making-anagrams]
@@ -41,3 +43,5 @@
 - [Heaps: Find the Running Median][heap-median]
 - [Trees: Is This a Binary Search Tree?][check-BST]
 - [DFS: Connected Cell in a Grid][dfs-connected-cell]
+- [BFS shortest-in-graph][shortest-in-graph]
+- [Bit Manipulation: Lonely Integer][bit-manipulation]
