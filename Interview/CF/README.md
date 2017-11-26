@@ -28,6 +28,8 @@ def hasPathWithGivenSum(t, s)
     return false;
 end
 ```
+-------
+
 
 ## Is Tree Symmetric
 
@@ -56,7 +58,7 @@ def helper(t1, t2)
     return helper(t1.left, t2.right) && helper(t1.right, t2.left)
 end
 ```
-
+---------
 
 ## Find Profession
 
@@ -96,6 +98,8 @@ end
 
 ```
 
+------
+
 ## kth Smallest In BST
 
 ```js
@@ -123,5 +127,78 @@ function kthSmallestInBST(t, k) {
     return result;
 
 }
+
+```
+
+---------
+
+## Is Sub Tree
+
+```ruby
+#
+# Definition for binary tree:
+# class Tree
+#   attr_accessor :value, :left, :right
+#   def initialize(val)
+#     @value = val
+#     @left = nil
+#     @right = nil
+# end
+def isSubtree(t1, t2)
+    if t1.nil?
+        if t2.nil?
+            return true
+        else
+            return false
+        end
+    end
+
+    if equalTrees(t1, t2)
+        return true
+    else
+        return isSubtree(t1.left, t2) || isSubtree(t1.right, t2)
+    end
+end
+
+def equalTrees(t1, t2)
+    if t1.nil? && t2.nil?
+        return true
+    end
+
+    if !t1.nil? && !t2.nil?
+        if t1.value == t2.value
+         return equalTrees(t1.left, t2.left) && equalTrees(t1.right, t2.right)
+        end
+    end
+
+    # value is not the same
+    # one of them is nil, but other the other
+    return false;
+end
+```
+-----------
+
+```ruby
+#
+# Definition for binary tree:
+# class Tree
+#   attr_accessor :value, :left, :right
+#   def initialize(val)
+#     @value = val
+#     @left = nil
+#     @right = nil
+# end
+
+def restoreBinaryTree(inorder, preorder)
+    return nil if inorder.length == 0
+
+    tree = Tree.new(preorder.shift)
+    pivot = inorder.index(tree.value)
+
+    tree.left = restoreBinaryTree(inorder[0...pivot], preorder)
+    tree.right = restoreBinaryTree(inorder[pivot..-1], preorder)
+
+    return tree
+end
 
 ```
