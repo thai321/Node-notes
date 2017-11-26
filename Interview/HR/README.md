@@ -46,7 +46,9 @@
 - [BFS shortest-in-graph][shortest-in-graph]
 - [Bit Manipulation: Lonely Integer][bit-manipulation]
 
-[tree-traveral]:Tree/tree_traversal.py
+[tree-traveral]: Tree/tree_traversal.py
+[height of BTS]: Tree/height_of_BTS.py
 
 ## Data Struture (Tree)
 - [Tree Traversal][tree-traveral]
+- [Height of BTS]
