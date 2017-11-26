@@ -46,7 +46,7 @@
 - [BFS shortest-in-graph][shortest-in-graph]
 - [Bit Manipulation: Lonely Integer][bit-manipulation]
 
-[tree-preorder]:
+[tree-traveral]:Tree/tree_traversal.py
 
 ## Data Struture (Tree)
-- [Tree: Preorder Traversal]
+- [Tree Traversal][tree-traveral]

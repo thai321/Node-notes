@@ -178,6 +178,8 @@ end
 ```
 -----------
 
+## Restore Binary Tree
+
 ```ruby
 #
 # Definition for binary tree:
@@ -199,6 +201,32 @@ def restoreBinaryTree(inorder, preorder)
     tree.right = restoreBinaryTree(inorder[pivot..-1], preorder)
 
     return tree
+end
+
+```
+
+
+
+--------
+
+
+## New Road System
+
+```ruby
+def newRoadSystem(roadRegister)
+    n = roadRegister.length
+    c = [0]*n
+
+    (0...n).each do |i|
+        (0...n).each do |j|
+            if roadRegister[i][j]
+                c[i] += 1
+                c[j] -= 1
+            end
+        end
+    end
+
+    c.all? { |el| el == 0 }
 end
 
 ```
