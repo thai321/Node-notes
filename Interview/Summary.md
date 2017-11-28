@@ -965,3 +965,203 @@ end
 puts solve(n, m, grid)
 
 ```
+
+
+
+------
+
+## Heap
+
+```ruby
+class BinaryMinHeap
+  attr_reader :store, :prc
+
+  def initialize(&prc)
+    @prc ||= Proc.new { |x,y| x <=> y }
+    @store = []
+  end
+
+  def count
+    @store.length
+  end
+
+  def extract
+    @store[0], @store[count - 1] = @store[count - 1], @store[0]
+    result = @store.pop
+    BinaryMinHeap.heapify_down(@store, 0, &@prc)
+    result
+  end
+
+  def peek
+    @store[0]
+  end
+
+  def push(val)
+    @store.push(val)
+    BinaryMinHeap.heapify_up(@store, count - 1, &@prc)
+  end
+
+  public
+  def self.child_indices(len, parent_index)
+    left_index = 2*parent_index + 1
+    right_index = 2*parent_index + 2
+    [left_index, right_index].select { |n| n < len }
+  end
+
+  def self.parent_index(child_index)
+    raise "root has no parent" if child_index == 0
+    (child_index - 1) / 2
+  end
+
+  def self.heapify_down(array, parent_idx, len = array.length, &prc)
+    prc ||= Proc.new { |x,y| x <=> y}
+    parent = array[parent_idx]
+
+    children_idxs = child_indices(len, parent_idx)
+    children = children_idxs.map { |idx| array[idx] }
+
+    return array if children.all? { |el| prc.call(parent, el) <=0 }
+
+    smaller_child_idx = children_idxs[0] # left children index
+
+    if children_idxs.length == 2 && prc.call(children[0], children[1]) > - 1
+      smaller_child_idx = children_idxs[1] # right children index
+    end
+
+    array[smaller_child_idx], array[parent_idx] = parent, array[smaller_child_idx]
+
+    heapify_down(array, smaller_child_idx, len, &prc)
+  end
+
+  def self.heapify_up(array, child_idx, len = array.length, &prc)
+    return array if child_idx == 0
+
+    prc ||= Proc.new { |a, b| a <=> b }
+    child = array[child_idx]
+    parent_idx = parent_index(child_idx)
+    parent = array[parent_idx]
+
+    if prc.call(child, parent) < 0
+      array[parent_idx], array[child_idx] = child, parent
+      heapify_up(array, parent_idx, len, &prc)
+    else
+      return array
+    end
+  end
+end
+```
+
+
+- Heap Sort
+
+```ruby
+
+class Array
+  def heap_sort!
+    heap = BinaryMinHeap.new
+    self.each { |num| heap.push(num) }
+    (0...length).each { |i| self[i] = heap.extract }
+  end
+end
+
+```
+
+
+- K Largest Element
+
+```ruby
+require_relative 'heap'
+
+def k_largest_elements(array, k)
+  heap = BinaryMinHeap.new
+  new_array = array.dup
+  new_array.each { |num| heap.push(num) }
+  (0...new_array.length).each { |i| new_array[i] = heap.extract }
+
+  new_array[-k..-1]
+end
+
+```
+
+
+-------
+
+## Hash Map
+
+```ruby
+require_relative 'p02_hashing'
+require_relative 'p04_linked_list'
+
+class HashMap
+  include Enumerable
+  attr_reader :count, :store
+
+  def initialize(num_buckets = 8)
+    @store = Array.new(num_buckets) { LinkedList.new }
+    @count = 0
+  end
+
+  def include?(key)
+    bucket(key).include?(key)
+  end
+
+  def set(key, val)
+    if include?(key)
+      bucket(key).update(key, val)
+    else
+      resize! if @count == num_buckets
+      bucket(key).append(key, val)
+      @count += 1
+    end
+  end
+
+  def get(key)
+    bucket(key).get(key)
+  end
+
+  def delete(key)
+    bucket(key).remove(key)
+    @count -= 1
+  end
+
+  def each
+    @store.each do |bucket|
+      bucket.each do |node|
+        yield [node.key, node.val]
+      end
+    end
+  end
+
+  # uncomment when you have Enumerable included
+  # def to_s
+  #   pairs = inject([]) do |strs, (k, v)|
+  #     strs << "#{k.to_s} => #{v.to_s}"
+  #   end
+  #   "{\n" + pairs.join(",\n") + "\n}"
+  # end
+
+  alias_method :[], :get
+  alias_method :[]=, :set
+
+  private
+
+  def num_buckets
+    @store.length
+  end
+
+  def resize!
+    new_hash_map = HashMap.new(num_buckets * 2)
+
+    each do |key, val|
+      new_hash_map.set(key, val)
+    end
+
+    @store = new_hash_map.store
+  end
+
+  def bucket(key)
+    # optional but useful; return the bucket corresponding to `key`
+    @store[key.hash % num_buckets]
+  end
+end
+```
