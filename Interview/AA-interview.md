@@ -3142,3 +3142,392 @@ end
 In this solution, we start by reading in the file. We will represent our graph as a hash in which the keys represent each vertex, and the values are an array of their connections (the other vertices).
 
 From there, we can generate a list of connected components by traversing our hash. We start by taking an arbitrary key from our hash and breadth first searching for connected vertices. We start a queue as well as an array representing our component. We search outwards, adding each key to the component and deleting it from the hash as we encounter it. We then add its neighbors to the queue. When our queue is empty, we've finished our current component, and check the next key in our hash to grab the next component.
+
+
+
+-------
+
+
+### OOP – Parking Lot
+
+#### Prompt
+
+Design a parking lot using object-oriented principles.
+
+(Don't spend too much time fleshing out actual methods. Aim to give a
+holistic view of which methods exist on each of the classes.)
+
+#### Solution
+
+This question is very open-ended. The interviewee should ask questions
+to specify what the design expectations are.
+
+Ensure that the interviewee aims to satisfy the following:
+
+* Each parking lot can have many floors.
+* Each parking lot allows for various kinds of vehicles to park. Assume
+these are motorcycle, car, and bus. Each of these has a different size.
+* There are multiple parking spot sizes. Assume those sizes are compact
+and regular.
+* The rules for parking a vehicle in a spot are something like this:
+  * Motorcycles can take any parking spot, whether regular or compact.
+    (They require, say, four feet of parking space.)
+  * Cars can take any regular spot. (They require, say, an eight foot
+    wide spot.)
+  * Buses require, say, forty feet of parking space, so they will have
+    to take multiple spaces.
+
+Obviously, there are many other possible questions about the structure,
+but the interviewee can assume that anything beyond these specifics are
+left to their discretion.
+
+What follows below would be a skeleton for a valid approach:
+
+```ruby
+class Vehicle
+  attr_reader :spots_needed, :size
+
+  def initialize(license_plate)
+    @parking_spots = []
+    @license_plate = license_plate
+  end
+
+  def park_in_spot(spot)
+    # ...
+  end
+
+  def clear_spots
+    # ...
+  end
+
+  def can_fit_in_spot(spot)
+    # ...
+  end
+end
+
+class Bus < Vehicle
+  def initialize
+    super
+    @spots_needed = 5
+    @size = :large
+  end
+
+  def can_fit_in_spot(spot)
+    # Checks if spot is :large
+  end
+end
+
+class Car < Vehicle
+  def initialize
+    super
+    @spots_needed = 1
+    @size = :compact
+  end
+
+  def can_fit_in_spot(spot)
+    # Check if spot is :compact or :large
+  end
+end
+
+class Motorcycle < Vehicle
+  def initialize
+    super
+    @spots_needed = 1
+    @size = :compact
+  end
+end
+
+class ParkingLot
+  def initialize
+    @levels = # generate_levels
+  end
+
+  def park_vehicle(vehicle)
+    # Park the vehicle in a spot or multiple spots. Return false if failed.
+  end
+end
+
+class Level
+  def initialize(floor, num_spots)
+    @spots = # generate spots
+    @available_spots = num_spots
+    @floor = floor
+  end
+
+  def park_vehicle(vehicle)
+    # Find a place to park vehicle or return false.
+  end
+
+  def park_starting_at(spot_num, vehicle)
+    # Park a vehicle starting at spot number and continue until vehicle.spots_needed.
+  end
+
+  def find_available_spots(vehicle)
+    # Find a spot to park the vehicle. Return index of spot or -1.
+  end
+
+  def spot_freed
+    @available_spots += 1
+  end
+end
+
+class ParkingSpot
+  attr_reader :row, :spot_num
+
+  def initialize(size, level, row, spot_num)
+    @vehicle = nil
+    @spot_size = size
+    @level = level
+    @row = row
+    @spot_num = spot_num
+  end
+
+  def is_free?
+    !@vehicle
+  end
+
+  def can_fit_vehicle?(vehicle)
+    # Check it will fit.
+  end
+
+  def park(vehicle)
+    # Park in spot
+  end
+
+  def unpark
+    # Remove vehicle from spot and notify level that a new spot is available.
+  end
+end
+```
+
+
+--------
+
+
+### Internal Project
+
+#### Prompt
+
+Our company needs an internal web application where employees can be
+associated with multiple projects and projects can be associated with
+multiple employees. How would you design the schema and models for this
+application?
+
+Include your database and model validations. What validations should you
+include?
+
+(Feel free to use `User` for the employee model and `users` for the
+employees table in the database.)
+
+#### Solution
+
+The key here is that users have a one-to-many relationship with projects
+and projects have a one-to-many relationship with users. This should
+signal to the interviewee that a join table will be needed. There are
+several names that could be used for this join table.
+
+For the validations, the interviewee ideally will think to prevent a
+case where a single user has multiple records for the same project. A
+user should only be able to be assigned to a project once. For this,
+they will need to validate for uniqueness on the combination of the
+`user_id` and `project_id`.
+
+Assuming that we choose to name the join table "assignments", the schema
+could look as follows. Note that they would not necessarily need to use
+the same `schema.rb` format.
+
+``` ruby
+create_table "users", force: true do |t|
+  t.string   "name", null: false
+  # ... Other Info ...
+  t.datetime "created_at"
+  t.datetime "updated_at"
+end
+
+
+create_table "assignments", force: true do |t|
+  t.integer  "user_id", null: false
+  t.integer  "project_id", null: false
+  t.datetime "created_at"
+  t.datetime "updated_at"
+end
+
+add_index "assignments", ["user_id"], name: "index_assignments_on_user_id"
+add_index "assignments", ["project_id"], name: "index_assignments_on_project_id"
+add_index "assignments", ["user_id", "project_id"], name: "index_assignments_on_user_id_and_project_id", unique: true
+
+create_table "projects", force: true do |t|
+  t.string   "name", null: false
+  # ... Other Info ...
+  t.datetime "created_at"
+  t.datetime "updated_at"
+end
+```
+
+The models could look as follows:
+
+``` ruby
+class User < ActiveRecord::Base
+  validates :name, presence: true
+
+  has_many :assignments,
+           primary_key: :id,
+           foreign_key: :user_id,
+           class_name: :Assignment
+
+  has_many :assigned_projects,
+           through: :assignments,
+           source: :project
+end
+
+class Assignment < ActiveRecord::Base
+  validates :user, uniqueness: { scope: :project }
+
+  belongs_to :user,
+             primary_key: :id,
+             foreign_key: :user_id,
+             class_name: :User
+
+  belongs_to :project,
+             primary_key: :id,
+             foreign_key: :project_id,
+             class_name: :Project
+end
+
+class Project < ActiveRecord::Base
+  validates :name, presence: true
+
+  has_many :assignments,
+           primary_key: :id,
+           foreign_key: :project_id,
+           class_name: :Assignment
+
+  has_many :assignees,
+           through: :assignments,
+           source: :user
+end
+```
+
+-------
+
+### Routes
+
+#### Prompt
+
+What code would you have to write to generate the following routes?
+Also, which controller actions will each route be matched to by default?
+
+```
+GET /cats
+GET /cats/:id
+GET /cats/new
+POST /cats
+GET /cats/:id/edit
+PATCH /cats/:id
+PUT /cats/:id
+DELETE /cats/:id
+GET /cats/:cat_id/tricks
+POST /cats/:cat_id/tricks
+DELETE /cats/:cat_id/tricks/:id
+POST /cats/:cat_id/upvote
+DELETE /cats/:cat_id/upvote
+```
+
+The interviewee can reference these routes [here][routes].
+
+[routes]: ../../code-excerpts/routes.md
+
+#### Solution
+
+This is the simplest way:
+
+```ruby
+Rails.application.routes.draw do
+  resources :cats do
+    resources :tricks, only: [:index, :create, :destroy]
+    resource :upvote, only: [:create, :destroy]
+  end
+end
+```
+
+If the interviewee uses the above code for their routes, they will be
+mapped to the following controller actions.
+
+```
+GET /cats                          cats#index
+GET /cats/:id                      cats#show
+GET /cats/new                      cats#new
+POST /cats                         cats#create
+GET /cats/:id/edit                 cats#edit
+PATCH /cats/:id                    cats#update
+PUT /cats/:id                      cats#update
+DELETE /cats/:id                   cats#destroy
+GET /cats/:cat_id/tricks           tricks#index
+POST /cats/:cat_id/tricks          tricks#create
+DELETE /cats/:cat_id/tricks/:id    tricks#destroy
+POST /cats/:cat_id/upvote          upvotes#create
+DELETE /cats/:cat_id/upvote        upvotes#destroy
+```
+
+### Bad Code
+
+#### Prompt
+
+What is wrong with the following controller action, and how would you
+improve it?
+
+``` ruby
+class CommentsController < ApplicationController
+  def users_comments
+    posts = Post.all
+    comments = posts.map(&:comments).flatten
+    @user_comments = comments.select do |comment|
+      comment.author.username == params[:username]
+    end
+  end
+end
+```
+
+The interviewee can see the code [here][bad-code].
+
+[bad-code]: ../../code-excerpts/bad-code.md
+
+#### Solution
+
+There are a few problems here.
+
+First and foremost is the N + 1 query. First we are fetching all posts,
+then we are running the `comments` method on each post, which, in turn,
+runs an additional query. So, for each post, we are running a query.
+
+To fix that problem, we should `includes` the comments to keep them in
+memory.
+
+``` ruby
+posts = Post.includes(:comments).all
+```
+
+Additionally, for each comment, we are calling the `author` method,
+which performs an additional look up! We should all `includes` that:
+
+``` ruby
+posts = Post.includes(comments: [:author]).all
+```
+
+Fixing the N + 1 query is great, but there's another general problem
+with this. Why are we handling the logic of the query in Ruby? There are
+essentially three requests that occur: one for the posts, and two to
+include the comments and authors in memory. This looks like something
+that could be delegated to SQL pretty easily with ActiveRecord.
+
+Here's an answer that returns what we're looking for in one query:
+
+``` ruby
+class CommentsController < ApplicationController
+  def users_comments
+    username = params[:username]
+    @user_comments = Comment.joins(:author)
+                            .where({ author: { username: username }})
+  end
+end
+```
