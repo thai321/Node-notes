@@ -8,6 +8,7 @@ describe('App', function() {
     expect(result).to.be.a('array');
     // expect(result).to.be.([6]);
     expect(result).to.have.lengthOf(1);
+    expect(result).to.eql([6]);
     // expect(result).to.have.property('tea').with.lengthOf(1);
 
     expect(true).to.be.true;
