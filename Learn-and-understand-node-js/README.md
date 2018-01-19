@@ -120,3 +120,39 @@ greeter1.greet()
 ### Pipe
 - Connecting two streams by writing to one stream what is being read from another
 - In Node you pipe from a Readable stream to a Writeable stream.
+
+------
+### TCP/ IP
+- **Protocol**: a set of rules two sides agree on to use when communicating
+- Both the client and server are programmed to understand and use that particular set of rules. It's similar to two people from different countries agreeing on a language to speak in.
+
+### Port
+- Once a computer receives a packet, how it knows what program to send it to.
+- When a program is setup on the operating system to receive packets from a particular port, it is said that the program is 'listening' to that port.
+
+-----
+### HTTP
+- A set of rules (and a format) for data being transferred on the web.
+- Stands for 'HyperText Transfer Protocol'. It's a format (of various) defining data being transferred via TCP/IP.
+
+----
+### MIME type
+- A Standard for specifying the type of data being sent.
+- STands for "multipurpose Internet Mail Extensions"
+- Examples: application/json, text/html, image/jpeg
+
+----
+### Serialize
+- Translating an object into a format that can be stored or transferred.
+- JSON, CSV, XML, and others are popular. 'Deserialize' is the opposite (converting the format back into an object).
+
+-----
+### Routing
+- Mapping HTTP Requests to content
+- Wheter actual files that exist on the server, or not.
+
+
+------
+### Middleware
+- Code that sits between two layers of software.
+- In the case of Express, sitting between the request and the response.
