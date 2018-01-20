@@ -1,0 +1,14 @@
+{
+  "name": "Learning-Sequelize",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "volleyball": "1.4.1"
+  }
+}
