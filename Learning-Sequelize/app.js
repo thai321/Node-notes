@@ -2,6 +2,10 @@ const express = require('express');
 const volleyball = require('volleyball');
 const bodyParser = require('body-parser');
 const path = require('path');
+
+const db = require('./db').db;
+
+// Our router
 const puppiesRouter = require('./puppiesRouter');
 
 // instantiate an instance of an press server
@@ -35,4 +39,7 @@ app.use('*', (req, res, next) => {
 
 const server = app.listen(3000, () => {
   console.log('Listening on port', server.address().port);
+  db.sync().then(message => {
+    console.log('DB is synced');
+  });
 });
