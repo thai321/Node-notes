@@ -3,17 +3,19 @@ const volleyball = require('volleyball');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const db = require('./db').db;
+const db = require('./db');
 
 // Our router
-const puppiesRouter = require('./puppiesRouter');
+const puppiesRouter = require('./routes/puppies');
+const parksRouter = require('./routes/parks');
+const locationsRouter = require('./routes/locations');
+const foodsRouter = require('./routes/foods');
 
 // instantiate an instance of an press server
 const app = express();
 const puppies = require('./puppies');
 
 // Middlewares
-
 // logging middleware
 app.use(volleyball);
 
@@ -30,6 +32,9 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 // Router to serve up puppies from the server
 app.use('/puppies', puppiesRouter);
+app.use('/parks', parksRouter);
+app.use('/locations', locationsRouter);
+app.use('/foods', foodsRouter);
 
 // All routes will eventually hit this by default if response is not send or
 // if it doesn't hit a route
@@ -39,7 +44,7 @@ app.use('*', (req, res, next) => {
 
 const server = app.listen(3000, () => {
   console.log('Listening on port', server.address().port);
-  db.sync().then(message => {
+  db.sync({ force: false }).then(message => {
     console.log('DB is synced');
   });
 });
