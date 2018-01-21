@@ -1,0 +1,11 @@
+{
+  "name": "Sequelize-cli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "7.4.1",
+    "sequelize": "4.31.2",
+    "sequelize-cli": "3.2.0"
+  }
+}
