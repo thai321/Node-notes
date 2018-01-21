@@ -35,7 +35,7 @@ function TSM(startId, points, result = { path: [], cost: 0 }) {
 }
 
 function permuations(points) {
-  if (points.length === 1) return [points];
+  if (points.length === 1) return points;
 
   const result = [];
 
@@ -46,7 +46,9 @@ function permuations(points) {
     ]);
     const subResult = subPoints.map(point => [points[i], ...subPoints]);
     console.log(subResult);
+    debugger
     result.concat(subResult);
+    // console.log(result);
   }
 
   return result;
