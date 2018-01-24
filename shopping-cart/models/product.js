@@ -3,11 +3,13 @@ module.exports = (sequelize, DataTypes) => {
   var Product = sequelize.define('Product', {
     imagePath: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     },
     title: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     },
     description: {
       allowNull: false,
