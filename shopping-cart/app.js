@@ -2,10 +2,12 @@ const express = require('express');
 const path = require('path');
 const expressHbs = require('express-handlebars');
 
-const middlewares = require('./config/middlewares');
+// const middlewares = require('./config/middlewares');
+const middlewares = require('./middlewares');
+
 const constants = require('./config/constants');
 
-const routes = require('./routes');
+const allRoutes = require('./routes');
 
 const models = require('./models');
 
@@ -20,7 +22,8 @@ middlewares(app);
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// All routes in routes folder
+allRoutes(app);
 
 const server = app.listen(constants.PORT, (err) => {
   if(err) {
