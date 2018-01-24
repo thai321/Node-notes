@@ -10,6 +10,7 @@ const csrfProtection = csrf();
 router.use(csrfProtection);
 
 router.get('/profile', isLoggedIn, (req, res, next) => {
+  console.log(res.locals.session);
   res.render('user/profile');
 });
 

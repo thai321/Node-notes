@@ -1,26 +1,16 @@
 const express = require('express');
 const path = require('path');
-const expressHbs = require('express-handlebars');
 
-// const middlewares = require('./config/middlewares');
+
 const middlewares = require('./middlewares');
-
 const constants = require('./config/constants');
-
 const allRoutes = require('./routes');
-
 const models = require('./models');
 
 const app = express();
 
-// view engine setup
-app.engine('.hbs', expressHbs({ defaultLayout: 'layout', extname: '.hbs' }));
-app.set('view engine', 'hbs');
-
 // Middleware
 middlewares(app);
-
-// app.use(express.static(path.join(__dirname, 'public')));
 
 // All routes in routes folder
 allRoutes(app);
