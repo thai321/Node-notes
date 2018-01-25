@@ -11,6 +11,9 @@ module.exports = app => {
   app.use(flash());
   app.use((req, res, next) => {
     res.locals.loggedIn = req.isAuthenticated();
+
+    // now we can access session in the view
+    // Ex: session.cart
     res.locals.session = req.session;
     next();
   });

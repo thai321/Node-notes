@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     totalPrice: {
       type: DataTypes.FLOAT,
       defaultValue: 0.0
+    },
+    products: {
+      type: DataTypes.VIRTUAL,
+      defaultValue: {}
     }
   }, {
     classMethods: {
@@ -21,16 +25,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Cart.prototype.add = function(item, id) {
+  Cart.prototype.add = function(product, id) {
     let storedItem = this.items[id];
     if(!storedItem) {
       storedItem = this.items[id] = { qty: 0, price: 0 };
+      this.products[id] = product.dataValues;
     }
 
     storedItem.qty++;
-    storedItem.price = item.price * storedItem.qty;
+    storedItem.price = product.price * storedItem.qty;
     this.totalQuantity++;
-    this.totalPrice += item.price;
+    this.totalPrice += product.price;
     return this
   }
   return Cart;
