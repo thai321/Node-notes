@@ -5,7 +5,6 @@ module.exports = {
   generateArray
 }
 
-
 function generateArray(products, items) {
   const arr = [];
   for(let id in items) {

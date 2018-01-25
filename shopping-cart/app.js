@@ -12,6 +12,13 @@ const app = express();
 // Middleware
 middlewares(app);
 
+// serve static files like images, css, html, etc
+// any get request that matches a particular file in the /public folder
+// can be found and sent back
+// for example - GET request to
+// localhost:3000/large.jpg will send back a puppy image
+app.use(express.static(path.join(__dirname, '/public')));
+
 // All routes in routes folder
 allRoutes(app);
 

@@ -26,7 +26,7 @@ router.get('/shopping-cart', (req, res, next) => {
   if(!req.session.cart) {
     return res.render('shop/shopping-cart', { products: null })
   }
-  // const cart = models.Cart.build(req.session.cart);
+
   const { cart: { items, products, totalPrice, totalQuantity  } } = req.session;
   const productsWithItems = generateArray(products, items);
   res.render('shop/shopping-cart', { products: productsWithItems, totalPrice, totalQuantity });
