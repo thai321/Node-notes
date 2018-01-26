@@ -5,49 +5,46 @@ const bCrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const constants = require('../config/constants');
 
-
 module.exports = (sequelize, DataTypes) => {
-  var User = sequelize.define('User', {
-    name: {
-      type: DataTypes.STRING,
-      validate: {
-        min: 4,
-        max: 8,
+  const User = sequelize.define(
+    'user',
+    {
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          min: 4,
+          max: 8
+        },
+        unique: true
       },
-      unique: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        isEmail: true
+      email: {
+        type: DataTypes.STRING,
+        validate: {
+          isEmail: true
+        },
+        unique: true
       },
-      unique: true
+      password: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      session_token: DataTypes.STRING,
+      cardNumber: DataTypes.STRING,
+      mailingAddress: DataTypes.STRING,
+      shippingAdress: DataTypes.STRING,
+      timezone: DataTypes.STRING
     },
-    password: DataTypes.STRING,
-    phone: DataTypes.STRING,
-    session_token: DataTypes.STRING,
-    cardNumber: DataTypes.STRING,
-    mailingAddress: DataTypes.STRING,
-    shippingAdress: DataTypes.STRING,
-    timezone: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    },
-    hooks: {
-      beforeCreate: (user, options) => {
-        const salt = bCrypt.genSaltSync(8);
-        user.salt = salt;
-        user.password = bCrypt.hashSync(user.password, salt);
+    {
+      hooks: {
+        beforeCreate: (user, options) => {
+          const salt = bCrypt.genSaltSync(8);
+          user.salt = salt;
+          user.password = bCrypt.hashSync(user.password, salt);
+        }
       }
     }
-  });
+  );
 
-
-  User.prototype.authenticate = function (password){
-    if(bCrypt.compareSync(password, this.password)) {
+  User.prototype.authenticate = function(password) {
+    if (bCrypt.compareSync(password, this.password)) {
       return this;
     } else {
       return false;

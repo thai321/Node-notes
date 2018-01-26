@@ -10,26 +10,35 @@ const { generateArray } = require('./helper');
 router.get('/add-to-cart/:id', (req, res, next) => {
   const productId = req.params.id;
 
-  const cart = req.session.cart ? models.Cart.build(req.session.cart) : models.Cart.build();
+  const cart = req.session.cart
+    ? models.Cart.build(req.session.cart)
+    : models.Cart.build();
 
   models.Product.findById(productId)
     .then(product => {
       cart.add(product, product.id);
       req.session.cart = cart;
       console.log(cart.dataValues);
-      res.redirect('/')
-    }).catch(err => {throw(err)});
+      res.redirect('/');
+    })
+    .catch(err => {
+      throw err;
+    });
 }); // END router.get('/add-to-cart/:id', (req, res, next)
 
 // Render the overview of the shopping list (cart view)
 router.get('/shopping-cart', (req, res, next) => {
-  if(!req.session.cart) {
-    return res.render('shop/shopping-cart', { products: null })
+  if (!req.session.cart) {
+    return res.render('shop/shopping-cart', { products: null });
   }
 
-  const { cart: { items, products, totalPrice, totalQuantity  } } = req.session;
+  const { cart: { items, products, totalPrice, totalQuantity } } = req.session;
   const productsWithItems = generateArray(products, items);
-  res.render('shop/shopping-cart', { products: productsWithItems, totalPrice, totalQuantity });
-}) // END router.get('/shopping-cart', (req, res, next)
+  res.render('shop/shopping-cart', {
+    products: productsWithItems,
+    totalPrice,
+    totalQuantity
+  });
+}); // END router.get('/shopping-cart', (req, res, next)
 
 module.exports = router;
