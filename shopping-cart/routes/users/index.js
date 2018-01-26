@@ -2,17 +2,49 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const csrf = require('csurf');
+const async = require('async');
 
-const { isLoggedIn, notLoggedIn } = require('./service');
+const models = require('../../models');
+
+const { isLoggedIn, notLoggedIn, getProducts } = require('./service');
+const { generateArray } = require('./helper');
 
 // all the routes should be protected by csrf
 const csrfProtection = csrf();
 router.use(csrfProtection);
 
 router.get('/profile', isLoggedIn, (req, res, next) => {
-  // console.log(res.locals.session);
-  res.render('user/profile');
-});
+  const { id } = req.user;
+  const result = [];
+
+  req.user
+    .getOrders({
+      attributes: [
+        'id',
+        'amount',
+        'paymentMethod',
+        'description',
+        'status',
+        'createdAt'
+      ],
+      include: [{ model: models.Cart }]
+    })
+    .then(orders => {
+      if (orders.length <= 0) {
+        console.log('HEROIIJOIJJOIJOJIO');
+        res.render('user/profile', { empty: true });
+      } else {
+        async.each(
+          orders,
+          getProducts, // service function
+          err => {
+            if (err) throw err;
+            res.render('user/profile', { orders });
+          } // END err => {
+        ); // END async.each(
+      } // END else {
+    }); // END .then(orders => {
+}); // END router.get('/profile', isLoggedIn, (req, res, next) => {
 
 router.get('/logout', isLoggedIn, (req, res, next) => {
   req.logout();

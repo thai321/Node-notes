@@ -18,13 +18,31 @@ router.get('/add-to-cart/:id', (req, res, next) => {
     .then(product => {
       cart.add(product, product.id);
       req.session.cart = cart;
-      console.log(cart.dataValues);
       res.redirect('/');
     })
     .catch(err => {
       throw err;
     });
 }); // END router.get('/add-to-cart/:id', (req, res, next)
+
+router.get('/reduce/:id', (req, res, next) => {
+  const productId = req.params.id;
+  const cart = models.Cart.build(req.session.cart);
+  const { price } = cart.products[productId];
+
+  cart.reduceByOne(price, productId);
+  req.session.cart = cart;
+  res.redirect('/shopping-cart');
+}); // END router.get('/reduce/:id', (req, res, next) => {
+
+router.get('/remove/:id', (req, res, next) => {
+  const productId = req.params.id;
+  const cart = models.Cart.build(req.session.cart);
+
+  cart.remove(productId);
+  req.session.cart = cart;
+  res.redirect('/shopping-cart');
+});
 
 // Render the overview of the shopping list (cart view)
 router.get('/shopping-cart', (req, res, next) => {

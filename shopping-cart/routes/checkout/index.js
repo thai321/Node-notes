@@ -27,7 +27,6 @@ router.post('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
   const { totalPrice } = req.session.cart;
-  // console.log(req.session.cart);
   const stripe = require('stripe')(stripeSecretKey);
 
   stripe.charges.create(
@@ -57,14 +56,14 @@ router.post('/checkout', requireSignin, (req, res, next) => {
         currency: charge.currency,
         description: charge.description,
         status: charge.status,
-        userId: 1
+        userId: req.user.id
       };
 
       models.Order.create(orderData)
         .then(order => {
           const cartData = Object.assign({}, req.session.cart);
           cartData.order = order.dataValues;
-          cartData.userId = 1;
+          cartData.userId = req.user.id;
           cartData.orderId = order.id;
 
           models.Cart.create(cartData)

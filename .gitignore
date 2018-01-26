@@ -3,3 +3,4 @@ node_modules/
 .byebug_history
 yarn.lock
 keys_dev.js
+keys_prod.js

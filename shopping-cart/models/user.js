@@ -42,6 +42,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  User.associate = models => {
+    User.hasMany(models.Order, {
+      foreignKey: 'userId'
+    });
+
+    User.hasMany(models.Cart, {
+      foreignKey: 'userId'
+    });
+  };
+
   User.prototype.authenticate = function(password) {
     if (bCrypt.compareSync(password, this.password)) {
       return this;

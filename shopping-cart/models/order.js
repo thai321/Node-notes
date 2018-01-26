@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.User, {
       foreignKey: 'userId'
     });
+
+    Order.hasOne(models.Cart, {
+      foreignKey: 'orderId'
+    });
   };
 
   return Order;

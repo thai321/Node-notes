@@ -1,35 +1,23 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Cart = sequelize.define(
-    'cart',
-    {
-      items: {
-        type: DataTypes.JSON,
-        defaultValue: {}
-      },
-      totalQuantity: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-      },
-      totalPrice: {
-        type: DataTypes.FLOAT,
-        defaultValue: 0.0
-      },
-      products: {
-        type: DataTypes.VIRTUAL,
-        defaultValue: {}
-      }
+  const Cart = sequelize.define('cart', {
+    items: {
+      type: DataTypes.JSON,
+      defaultValue: {}
+    },
+    totalQuantity: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    totalPrice: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0.0
+    },
+    products: {
+      type: DataTypes.VIRTUAL,
+      defaultValue: {}
     }
-    // {
-    // classMethods: {
-    //   associate: function(models) {
-    //     // associations can be defined here
-    //     Cart.belongsTo(models.User);
-    //     Cart.belongsTo(models.Order);
-    //   }
-    // }
-    // }
-  );
+  });
 
   Cart.associate = models => {
     Cart.belongsTo(models.Order, {
@@ -54,5 +42,23 @@ module.exports = (sequelize, DataTypes) => {
     this.totalPrice += product.price;
     return this;
   };
+
+  Cart.prototype.reduceByOne = function(productPrice, id) {
+    this.items[id].qty--;
+    this.items[id].price -= productPrice;
+    this.totalQuantity--;
+    this.totalPrice -= productPrice;
+
+    if (this.items[id].qty <= 0) {
+      delete this.items[id];
+    }
+  };
+
+  Cart.prototype.remove = function(id) {
+    this.totalQuantity -= this.items[id].qty;
+    this.totalPrice -= this.items[id].price;
+    delete this.items[id];
+  };
+
   return Cart;
 };
