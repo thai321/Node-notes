@@ -14,8 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           min: 4,
           max: 8
-        },
-        unique: true
+        }
       },
       email: {
         type: DataTypes.STRING,

@@ -18,16 +18,8 @@ const models = {
   Order: sequelize['import'](path.join(__dirname, 'order'))
 };
 
-// Object.keys(models).forEach(modelName => {
-//   if (models[modelName].associate) {
-//     models[modelName].associate(models);
-//   }
-// });
-
 Object.keys(models).forEach(modelName => {
-  console.log('osidjfiosjdoifjsoidfjosfd======', modelName);
   if ('associate' in models[modelName]) {
-    console.log('HDISHDIFHSOFHJIOSJDJSFSF+++++++', models[modelName].associate);
     models[modelName].associate(models);
   }
 });

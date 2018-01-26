@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 const models = require('../../models');
+const { requireSignin } = require('./service');
 
 const {
   stripePublishableKey,
   stripeSecretKey
 } = require('../../config/keys_dev');
 
-router.get('/checkout', (req, res, next) => {
+router.get('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
   const errMsg = req.flash('error')[0];
@@ -22,7 +23,7 @@ router.get('/checkout', (req, res, next) => {
 }); // END router.get('/checkout', (req, res, next)
 
 // Charging the customer with Stripe service
-router.post('/checkout', (req, res, next) => {
+router.post('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
   const { totalPrice } = req.session.cart;
@@ -61,8 +62,6 @@ router.post('/checkout', (req, res, next) => {
 
       models.Order.create(orderData)
         .then(order => {
-          console.log('ORDER ===== ', order);
-
           const cartData = Object.assign({}, req.session.cart);
           cartData.order = order.dataValues;
           cartData.userId = 1;
@@ -72,7 +71,6 @@ router.post('/checkout', (req, res, next) => {
             .then(cart => {
               req.flash('success', 'Successfully bought product!');
               req.session.cart = null;
-              console.log(('CART ===== ', cart));
               res.redirect('/');
 
               // END models.Cart.create(req.session.cart)
