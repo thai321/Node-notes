@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "s": "nodemon app.js",
-    "dev": "cross-env NODE_ENV=development nodemon app.js"
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "t": "cross-env NODE_ENV=development mocha --recursive --exit"
   },
   "dependencies": {
     "async": "2.6.0",
     "bcrypt": "1.0.3",
     "body-parser": "~1.18.2",
+    "chai": "4.1.2",
     "connect-flash": "0.1.1",
     "connect-session-sequelize": "5.1.0",
     "cookie-parser": "~1.4.3",
@@ -19,6 +21,8 @@
     "express-handlebars": "3.0.0",
     "express-session": "1.15.6",
     "joi": "13.1.1",
+    "jquery": "3.3.1",
+    "jsdom": "11.6.1",
     "jsonwebtoken": "8.1.1",
     "moment": "2.20.1",
     "passport": "0.4.0",
@@ -29,8 +33,11 @@
     "stripe": "5.4.0"
   },
   "devDependencies": {
+    "expect": "22.1.0",
+    "mocha": "5.0.0",
     "morgan": "1.9.0",
-    "volleyball": "1.4.1",
-    "pryjs": "1.0.3"
+    "pryjs": "1.0.3",
+    "supertest": "3.0.0",
+    "volleyball": "1.4.1"
   }
 }

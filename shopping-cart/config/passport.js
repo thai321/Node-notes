@@ -28,6 +28,8 @@ passport.use(
       passReqToCallback: true
     },
     (req, email, password, done) => {
+      // console.log('REQ PASSPORT ==== ', req);
+
       // Use joi check validation for name, email, and password
       const checkValidate = Joi.validate(
         { name: req.body.name, email, password },
@@ -94,6 +96,8 @@ passport.use(
       passReqToCallback: true
     },
     (req, email, password, done) => {
+      console.log(' REQ Passport === ', req);
+
       const checkValidate = Joi.validate({ email, password }, signInSchema, {
         abortEarly: false
       });
