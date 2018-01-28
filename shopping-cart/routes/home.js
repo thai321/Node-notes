@@ -5,6 +5,7 @@ const models = require('../models/');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
+  // res.send({ hello: 'hello' });
   models.Product.findAll().then(products => {
     const successMsg = req.flash('success')[0];
     const productChunks = [];
@@ -12,6 +13,8 @@ router.get('/', (req, res, next) => {
     for (let i = 0; i < products.length; i += chunkSize) {
       productChunks.push(products.slice(i, i + chunkSize));
     }
+
+    console.log(213132);
 
     res.render('shop/index', {
       title: 'Shopping Cart',

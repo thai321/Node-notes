@@ -18,6 +18,7 @@ router.get('/profile', isLoggedIn, (req, res, next) => {
   const result = [];
 
   console.log('OISDJFOJSDIFJOISDJFIOJSDFIOJDIOFIODFSOIJ');
+  console.log('REs body ==== ', req.body);
   req.user
     .getOrders({
       attributes: [
@@ -76,6 +77,7 @@ router.post(
   (req, res, next) => {
     // console.log('REQ BODY ====== ', req.body);
     console.log('I am sign up now');
+    console.log('REQ body ==== ', req.body);
     // this funtion will run if sign in success
     if (req.session.oldUrl) {
       const { oldUrl } = req.session;

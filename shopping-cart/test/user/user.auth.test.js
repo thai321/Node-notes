@@ -287,7 +287,7 @@ describe('Routes : user authentication', () => {
     }); // END it('should NOT able to signin with wrong email', done => {
 
     // Can't sign with a wrong password
-    it('should NOT able to signin with wrong password', done => {
+    it('should NOT able to signin with wrong email', done => {
       authenticatedUser
         .get(signupUrl)
         .expect(200, done)
@@ -324,8 +324,8 @@ describe('Routes : user authentication', () => {
                         .set('cookie', res2.headers['set-cookie'])
                         .send({
                           _csrf: csrf,
-                          email: signinUser.email,
-                          password: 'wrong'
+                          email: 'wrong@gmail.com',
+                          password: signinUser.password
                         })
                         .expect('Location', signinUrl)
                         .expect(302, done);
