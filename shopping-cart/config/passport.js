@@ -28,11 +28,12 @@ passport.use(
       passReqToCallback: true
     },
     (req, email, password, done) => {
-      // console.log('REQ PASSPORT ==== ', req);
+      const { name, phone } = req.body;
+      console.log('REQ PASSPORT ==== ', req.body);
 
       // Use joi check validation for name, email, and password
       const checkValidate = Joi.validate(
-        { name: req.body.name, email, password },
+        { name, email, password, phone },
         signUpSchema,
         { abortEarly: false }
       );
@@ -53,7 +54,7 @@ passport.use(
           });
         } else {
           // Create user if not found
-          models.User.create({ name: req.body.name, email, password })
+          models.User.create({ name: req.body.name, email, password, phone })
             .then(newUser => {
               if (!newUser) {
                 return done(null, false);
@@ -83,7 +84,8 @@ const signUpSchema = Joi.object().keys({
     .required(),
   password: Joi.string()
     .regex(/^[a-zA-Z0-9]{3,30}$/)
-    .required()
+    .required(),
+  phone: Joi.string().length(10)
 });
 
 // Signin Strategy

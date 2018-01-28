@@ -1,4 +1,6 @@
 const express = require('express');
+const accounting = require('accounting-js');
+
 const router = express.Router();
 
 const models = require('../../models');
@@ -58,7 +60,7 @@ router.get('/shopping-cart', (req, res, next) => {
   const productsWithItems = generateArray(products, items);
   res.render('shop/shopping-cart', {
     products: productsWithItems,
-    totalPrice,
+    totalPrice: accounting.formatMoney(totalPrice),
     totalQuantity
   });
 }); // END router.get('/shopping-cart', (req, res, next)

@@ -1,13 +1,19 @@
 const express = require('express');
-const router = express.Router();
-
 const models = require('../../models');
-const { requireSignin } = require('./service');
+const accounting = require('accounting-js');
 
+const pry = require('pryjs');
+
+const { requireSignin } = require('./service');
 const {
   stripePublishableKey,
-  stripeSecretKey
+  stripeSecretKey,
+  twilioAccountSID,
+  twilioAuthToken
 } = require('../../config/keys_dev');
+
+const router = express.Router();
+const client = require('twilio')(twilioAccountSID, twilioAuthToken);
 
 router.get('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
@@ -24,8 +30,11 @@ router.get('/checkout', requireSignin, (req, res, next) => {
 
 // Charging the customer with Stripe service
 router.post('/checkout', requireSignin, (req, res, next) => {
+  // eval(pry.it);
+
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
+  const { id, name, phone, email } = req.user;
   const { totalPrice } = req.session.cart;
   const stripe = require('stripe')(stripeSecretKey);
 
@@ -36,7 +45,8 @@ router.post('/checkout', requireSignin, (req, res, next) => {
       source: req.body.stripeToken, // obtained with Stripe.js
       description: 'Testing charge',
       metadata: {
-        userName: 'Thai'
+        userName: name,
+        email
       }
     },
     (err, charge) => {
@@ -56,24 +66,40 @@ router.post('/checkout', requireSignin, (req, res, next) => {
         currency: charge.currency,
         description: charge.description,
         status: charge.status,
-        userId: req.user.id
+        userId: id
       };
 
       models.Order.create(orderData)
         .then(order => {
           const cartData = Object.assign({}, req.session.cart);
           cartData.order = order.dataValues;
-          cartData.userId = req.user.id;
+          cartData.userId = id;
           cartData.orderId = order.id;
 
           models.Cart.create(cartData)
             .then(cart => {
               req.flash('success', 'Successfully bought product!');
               req.session.cart = null;
-              res.redirect('/');
 
-              // END models.Cart.create(req.session.cart)
-            })
+              const moneyFormat = accounting.format(
+                eval(charge.amount / 100),
+                2
+              );
+              if (phone) {
+                client.messages
+                  .create({
+                    to: `+1${phone}`,
+                    from: '+18312467082',
+                    body: `TESTING: Thank you for the order of ${moneyFormat}`
+                  })
+                  .then(message => {
+                    console.log(message);
+                    res.redirect('/');
+                  });
+              } else {
+                res.redirect('/');
+              }
+            }) // END .then(cart => {
             .catch(error => {
               throw error;
             });

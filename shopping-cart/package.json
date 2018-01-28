@@ -8,6 +8,7 @@
     "t": "cross-env NODE_ENV=development mocha --recursive --exit"
   },
   "dependencies": {
+    "accounting-js": "1.1.1",
     "async": "2.6.0",
     "bcrypt": "1.0.3",
     "body-parser": "~1.18.2",
@@ -30,7 +31,8 @@
     "pg": "7.4.1",
     "sequelize": "4.32.1",
     "sequelize-cli": "3.2.0",
-    "stripe": "5.4.0"
+    "stripe": "5.4.0",
+    "twilio": "3.11.1"
   },
   "devDependencies": {
     "expect": "22.1.0",
