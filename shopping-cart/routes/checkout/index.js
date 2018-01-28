@@ -1,19 +1,16 @@
 const express = require('express');
 const models = require('../../models');
+const async = require('async');
 const accounting = require('accounting-js');
+const moment = require('moment');
 
-const pry = require('pryjs');
-
-const { requireSignin } = require('./service');
+const { sendTextMessage, sendMail, requireSignin } = require('./service');
 const {
   stripePublishableKey,
-  stripeSecretKey,
-  twilioAccountSID,
-  twilioAuthToken
+  stripeSecretKey
 } = require('../../config/keys_dev');
 
 const router = express.Router();
-const client = require('twilio')(twilioAccountSID, twilioAuthToken);
 
 router.get('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
@@ -30,8 +27,6 @@ router.get('/checkout', requireSignin, (req, res, next) => {
 
 // Charging the customer with Stripe service
 router.post('/checkout', requireSignin, (req, res, next) => {
-  // eval(pry.it);
-
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
   const { id, name, phone, email } = req.user;
@@ -85,20 +80,25 @@ router.post('/checkout', requireSignin, (req, res, next) => {
                 eval(charge.amount / 100),
                 2
               );
-              if (phone) {
-                client.messages
-                  .create({
-                    to: `+1${phone}`,
-                    from: '+18312467082',
-                    body: `TESTING: Thank you for the order of ${moneyFormat}`
-                  })
-                  .then(message => {
-                    console.log(message);
-                    res.redirect('/');
-                  });
-              } else {
-                res.redirect('/');
-              }
+              const date = moment(order.createdAt).format('LLLL');
+              const data = { name, email, moneyFormat, date, phone };
+
+              // Send text message and email to the user for confirmation
+              async.series(
+                [
+                  callback => {
+                    callback(null, sendTextMessage(data));
+                  },
+                  callback => {
+                    callback(null, sendMail(data));
+                  }
+                ],
+                (err, result) => {
+                  console.log('err === ', err);
+                  console.log('result ==== ', result);
+                  res.redirect('/');
+                } // END (err, result) => {
+              ); // END async.series(
             }) // END .then(cart => {
             .catch(error => {
               throw error;
@@ -109,7 +109,7 @@ router.post('/checkout', requireSignin, (req, res, next) => {
           throw error;
         });
     }
-  ); // END (err, charge)
+  ); // END stripe.charges.create(
 }); // END router.post('/checkout', (req, res, next) => {
 
 module.exports = router;

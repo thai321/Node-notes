@@ -1,4 +1,4 @@
-// async = require('async');
+async = require('async');
 //
 // // 1st para in async.each() is the array of items
 // async.each(
@@ -36,3 +36,22 @@
 //   .then(message => {
 //     console.log(message);
 //   });
+
+async.series(
+  [
+    function one({ callback }) {
+      console.log('Call back = ', callback);
+      callback(null, 'one');
+    },
+    function one(callback) {
+      callback(null, 'two');
+    },
+    function one(callback) {
+      callback(null, 'three');
+    }
+  ],
+  function(err, result) {
+    console.log(result);
+    console.log(1);
+  }
+);

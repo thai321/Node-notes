@@ -8,6 +8,7 @@
     "t": "cross-env NODE_ENV=development mocha --recursive --exit"
   },
   "dependencies": {
+    "@sendgrid/mail": "6.2.1",
     "accounting-js": "1.1.1",
     "async": "2.6.0",
     "bcrypt": "1.0.3",
