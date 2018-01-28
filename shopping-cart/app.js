@@ -5,6 +5,7 @@ const middlewares = require('./middlewares');
 const constants = require('./config/constants');
 const allRoutes = require('./routes');
 const models = require('./models');
+const workersReady = require('./services/cluster');
 
 const app = express();
 
@@ -21,22 +22,26 @@ allRoutes(app);
 // localhost:3000/large.jpg will send back a puppy image
 app.use(express.static(path.join(__dirname, '/public')));
 
-const server = app.listen(constants.PORT, err => {
-  if (err) {
-    throw err;
-  }
+if (workersReady()) {
+  const server = app.listen(constants.PORT, err => {
+    if (err) {
+      throw err;
+    }
 
-  console.log('Listening on port:', constants.PORT);
-  console.log(`Enviroment: ${process.env.NODE_ENV}`);
-
-  models.sequelize
-    .sync()
-    .then(function() {
-      console.log('Nice! Database looks fine');
-    })
-    .catch(function(err) {
-      console.log(err, 'Something went wrong with the Database Update!');
-    });
-});
+    console.log('Listening on port:', constants.PORT);
+    console.log(`Enviroment: ${process.env.NODE_ENV}`);
+    console.log(
+      'Process ' + process.pid + ' is listening to all incoming requests'
+    );
+    models.sequelize
+      .sync()
+      .then(function() {
+        console.log('Nice! Database looks fine');
+      })
+      .catch(function(err) {
+        console.log(err, 'Something went wrong with the Database Update!');
+      });
+  });
+}
 
 module.exports = { app };
