@@ -7,48 +7,38 @@ This user is not authenticated,
 therefore we expect to be redirected to the /login page.
 */
 
+// Setup for testing
 const chai = require('chai');
 const request = require('supertest');
+const expect = chai.expect;
+chai.config.includeStack = true;
 
+// JQuery
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const { window } = new JSDOM(`...`);
 var jQuery = require('jquery')(window);
 
-const expect = chai.expect;
-chai.config.includeStack = true;
-
+// Models and App
 const { app } = require('../../app');
 const models = require('../../models');
 const { Session } = models.sequelize.models;
 
-// console.log(models.sequelize.models.Session);
-
-const user1 = {
-  email: 'thai2@gmail.com',
-  password: '12331'
-};
-
-const signUpUser = {
-  name: 'Mary',
-  email: 'mary@gmail.com',
-  password: '12331'
-};
-
-const signinUser = {
-  name: 'Mary2',
-  email: 'mary2@gmail.com',
-  password: '123321'
-};
-
+// for authentication request
 const authenticatedUser = request.agent(app);
 
-describe('Routes : user authentication', () => {
-  const signupUrl = '/user/signup';
-  const signinUrl = '/user/signin';
-  const logoutUrl = '/user/logout';
-  const userProfile = '/user/profile';
+// Fixtures
+const { productData1 } = require('../../fixtures/products');
+const { signUpUser, signinUser } = require('../../fixtures/users');
 
+// Urls
+const homepage = '/';
+const signupUrl = '/user/signup';
+const signinUrl = '/user/signin';
+const logoutUrl = '/user/logout';
+const userProfile = '/user/profile';
+
+describe('Routes : user authentication', () => {
   describe('GET /user/signup', () => {
     // Should render '/user/signup' Sign Up with status code 200
     it('should render the signup page', done => {
@@ -59,14 +49,11 @@ describe('Routes : user authentication', () => {
   }); // END describe('GET /user/signup', () => {
 
   describe('POST /user/signup', () => {
-    // Clear out the User table
-    beforeEach(() => {
-      models.User.destroy({
-        where: {}
-      });
-
-      Session.destroy({
-        where: {}
+    // Reset the database and create a new product
+    beforeEach(done => {
+      setTimeout(done, 500);
+      models.sequelize.sync({ force: true, logging: false }).then(() => {
+        return models.Product.create(productData1);
       });
     });
 
@@ -75,8 +62,8 @@ describe('Routes : user authentication', () => {
       authenticatedUser.get(signupUrl).end((err, res1) => {
         const $html = jQuery(res1.text);
         const csrf = $html.find('input[name=_csrf]').val();
-        console.log(csrf);
         const cookie = res1.headers['set-cookie'];
+
         authenticatedUser
           .post(signupUrl)
           .set('cookie', cookie)
@@ -85,7 +72,19 @@ describe('Routes : user authentication', () => {
             ...signUpUser
           })
           .end((err, res2) => {
-            authenticatedUser.get(userProfile).expect(200, done);
+            authenticatedUser
+              .get(userProfile)
+              .expect(200, done)
+              .end((err, res2) => {
+                models.User.findOne({
+                  where: { email: signUpUser.email }
+                }).then(user => {
+                  expect(user).to.have.property('name', signUpUser.name);
+                  expect(user).to.have.property('email', signUpUser.email);
+                  expect(user).to.have.property('phone', signUpUser.phone);
+                  done();
+                }); // END }).then(user => {
+              }); // END .end((err, res2) => {
           }); // END .end((err, res2) => {
       }); // END .end((err, res1) => {
     }); // END it('should able to singup --> profile', done => {
@@ -108,17 +107,29 @@ describe('Routes : user authentication', () => {
             })
             .expect('Location', '/user/profile')
             .end((err, res2) => {
-              authenticatedUser
-                .get(signupUrl)
-                .set('cookie', res2.headers['set-cookie'])
-                .send({
-                  _csrf: csrf
-                })
-                .end((err, res3) => {
-                  expect('Location', '/');
-                  expect(res3.statusCode, 302);
-                  done();
-                });
+              models.User.findOne({
+                where: { email: signUpUser.email }
+              }).then(user => {
+                expect(user).to.have.property('name', signUpUser.name);
+                expect(user).to.have.property('email', signUpUser.email);
+                expect(user).to.have.property('phone', signUpUser.phone);
+
+                authenticatedUser
+                  .get(signupUrl)
+                  .set('cookie', res2.headers['set-cookie'])
+                  .send({
+                    _csrf: csrf
+                  })
+                  .end((err, res3) => {
+                    expect('Location', '/');
+                    expect(res3.statusCode, 302);
+                    models.User.findAll().then(users => {
+                      expect(users).to.be.an('array');
+                      expect(users).to.have.lengthOf(1);
+                      done();
+                    }); // END models.User.findAll().then(users => {
+                  }); // END .end((err, res3) => {
+              }); // END }).then(user => {
             }); // END .end((err, res2) => {
         }); // END .end((err, res1) => {
     }); // it('should able to signup --> profile, try /user/signup ---> /', done => {
@@ -141,24 +152,39 @@ describe('Routes : user authentication', () => {
             })
             .expect('Location', '/user/profile')
             .end((err, res2) => {
-              authenticatedUser
-                .get(logoutUrl)
-                .set('cookie', res2.headers['set-cookie'])
-                .send({
-                  _csrf: csrf
-                })
-                .expect('Location', '/')
-                .end((err, res3) => {
-                  authenticatedUser
-                    .post(signupUrl)
-                    .set('cookie', res3.headers['set-cookie'])
-                    .send({
-                      _csrf: csrf,
-                      ...signUpUser
-                    })
-                    .expect('Location', '/user/signup')
-                    .expect(302, done);
-                }); // END .end((err, res3) => {
+              models.User.findOne({
+                where: { email: signUpUser.email }
+              }).then(user => {
+                expect(user).to.have.property('name', signUpUser.name);
+                expect(user).to.have.property('email', signUpUser.email);
+                expect(user).to.have.property('phone', signUpUser.phone);
+
+                authenticatedUser
+                  .get(logoutUrl)
+                  .set('cookie', res2.headers['set-cookie'])
+                  .send({
+                    _csrf: csrf
+                  })
+                  .expect('Location', '/')
+                  .end((err, res3) => {
+                    authenticatedUser
+                      .post(signupUrl)
+                      .set('cookie', res3.headers['set-cookie'])
+                      .send({
+                        _csrf: csrf,
+                        ...signUpUser
+                      })
+                      .expect('Location', '/user/signup')
+                      .expect(302, done)
+                      .end((err, res4) => {
+                        models.User.findAll().then(users => {
+                          expect(users).to.be.an('array');
+                          expect(users).to.have.lengthOf(1);
+                          done();
+                        }); // END models.User.findAll().then(users => {
+                      }); // END .end((err, res4) => {
+                  }); // END .end((err, res3) => {
+              }); // END }).then(user => {
             }); // END .end((err, res2) => {
         }); // END .end((err, res1) => {
     }); // END it('should not able to signup if already a member', done => {
@@ -177,13 +203,11 @@ describe('Routes : user authentication', () => {
   }); // END describe('GET /user/signin', () => {
 
   describe('POST /user/signin', () => {
-    beforeEach(() => {
-      models.User.destroy({
-        where: {}
-      });
-
-      Session.destroy({
-        where: {}
+    // Reset the database and create a new product
+    beforeEach(done => {
+      setTimeout(done, 500);
+      models.sequelize.sync({ force: true, logging: false }).then(() => {
+        return models.Product.create(productData1);
       });
     });
 
@@ -205,34 +229,49 @@ describe('Routes : user authentication', () => {
             })
             .expect('Location', '/user/profile')
             .end((err, res2) => {
-              authenticatedUser
-                .get(logoutUrl)
-                .set('cookie', res2.headers['set-cookie'])
-                .send({
-                  _csrf: csrf
-                })
-                .expect('Location', '/')
-                .end((err, res3) => {
-                  authenticatedUser
-                    .get(signinUrl)
-                    .expect(200, done)
-                    .end((err, res4) => {
-                      $html = jQuery(res4.text);
-                      csrf = $html.find('input[name=_csrf]').val();
+              models.User.findOne({
+                where: { email: signinUser.email }
+              }).then(user => {
+                expect(user).to.have.property('name', signinUser.name);
+                expect(user).to.have.property('email', signinUser.email);
+                expect(user).to.have.property('phone', signinUser.phone);
 
-                      authenticatedUser
-                        .post(signinUrl)
-                        .set('cookie', res2.headers['set-cookie'])
-                        .send({
-                          _csrf: csrf,
-                          ...signinUser
-                        })
-                        .expect('Location', userProfile)
-                        .end((err, res5) => {
-                          authenticatedUser.get(userProfile).expect(200, done);
-                        }); // END .end((err, res5) => {
-                    }); // END .end((err, res4) => {
-                }); // END .end((err, res3) => {
+                authenticatedUser
+                  .get(logoutUrl)
+                  .set('cookie', res2.headers['set-cookie'])
+                  .send({
+                    _csrf: csrf
+                  })
+                  .expect('Location', '/')
+                  .end((err, res3) => {
+                    authenticatedUser
+                      .get(signinUrl)
+                      .expect(200, done)
+                      .end((err, res4) => {
+                        $html = jQuery(res4.text);
+                        csrf = $html.find('input[name=_csrf]').val();
+
+                        authenticatedUser
+                          .post(signinUrl)
+                          .set('cookie', res2.headers['set-cookie'])
+                          .send({
+                            _csrf: csrf,
+                            ...signinUser
+                          })
+                          .expect('Location', userProfile)
+                          .end((err, res5) => {
+                            models.User.findAll().then(users => {
+                              expect(users).to.be.an('array');
+                              expect(users).to.have.lengthOf(1);
+
+                              authenticatedUser
+                                .get(userProfile)
+                                .expect(200, done);
+                            }); // END }).then(user => {
+                          }); // END .end((err, res5) => {
+                      }); // END .end((err, res4) => {
+                  }); // END .end((err, res3) => {
+              }); // END }).then(user => {
             }); // END .end((err, res2) => {
         }); // END .end((err, res1) => {
     }); // it('should able to signin --> profile, try /user/signup ---> /', done => {
@@ -255,33 +294,48 @@ describe('Routes : user authentication', () => {
             })
             .expect('Location', '/user/profile')
             .end((err, res2) => {
-              authenticatedUser
-                .get(logoutUrl)
-                .set('cookie', res2.headers['set-cookie'])
-                .send({
-                  _csrf: csrf
-                })
-                .expect('Location', '/')
-                .end((err, res3) => {
-                  authenticatedUser
-                    .get(signinUrl)
-                    .expect(200, done)
-                    .end((err, res4) => {
-                      $html = jQuery(res4.text);
-                      csrf = $html.find('input[name=_csrf]').val();
+              models.User.findOne({
+                where: { email: signinUser.email }
+              }).then(user => {
+                expect(user).to.have.property('name', signinUser.name);
+                expect(user).to.have.property('email', signinUser.email);
+                expect(user).to.have.property('phone', signinUser.phone);
 
-                      authenticatedUser
-                        .post(signinUrl)
-                        .set('cookie', res2.headers['set-cookie'])
-                        .send({
-                          _csrf: csrf,
-                          email: 'wrong@gmail.com',
-                          password: signinUser.password
-                        })
-                        .expect('Location', signinUrl)
-                        .expect(302, done);
-                    }); // END .end((err, res4) => {
-                }); // END .end((err, res3) => {
+                authenticatedUser
+                  .get(logoutUrl)
+                  .set('cookie', res2.headers['set-cookie'])
+                  .send({
+                    _csrf: csrf
+                  })
+                  .expect('Location', '/')
+                  .end((err, res3) => {
+                    authenticatedUser
+                      .get(signinUrl)
+                      .expect(200, done)
+                      .end((err, res4) => {
+                        $html = jQuery(res4.text);
+                        csrf = $html.find('input[name=_csrf]').val();
+
+                        authenticatedUser
+                          .post(signinUrl)
+                          .set('cookie', res2.headers['set-cookie'])
+                          .send({
+                            _csrf: csrf,
+                            email: 'wrong@gmail.com',
+                            password: signinUser.password
+                          })
+                          .expect('Location', signinUrl)
+                          .expect(302, done)
+                          .end((err, res5) => {
+                            models.User.findAll().then(users => {
+                              expect(users).to.be.an('array');
+                              expect(users).to.have.lengthOf(1);
+                              done();
+                            }); // END models.User.findAll().then(users => {
+                          }); // END .end((err, res5) => {
+                      }); // END .end((err, res4) => {
+                  }); // END .end((err, res3) => {
+              }); // END }).then(user => {
             }); // END .end((err, res2) => {
         }); // END .end((err, res1) => {
     }); // END it('should NOT able to signin with wrong email', done => {

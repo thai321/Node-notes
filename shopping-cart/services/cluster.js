@@ -24,6 +24,7 @@ module.exports = () => {
       console.log('Starting a new worker');
       cluster.fork();
     });
+    return false;
   } else {
     return true;
   }

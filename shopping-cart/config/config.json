@@ -8,11 +8,12 @@
     "logging": false
   },
   "test": {
-    "username": "root",
+    "username": "ThaiNguyen",
     "password": null,
-    "database": "database_test",
+    "database": "shoppingcart",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres",
+    "logging": false
   },
   "production": {
     "username": "root",
