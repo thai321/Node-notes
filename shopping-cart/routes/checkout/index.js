@@ -15,8 +15,6 @@ const router = express.Router();
 router.get('/checkout', requireSignin, (req, res, next) => {
   if (!req.session.cart) return res.redirect('/shopping-cart');
 
-  console.log('get Checkout REQ = ', req.body);
-
   const errMsg = req.flash('error')[0];
   const { totalPrice } = req.session.cart;
   res.render('shop/checkout', {
@@ -34,7 +32,6 @@ router.post('/checkout', requireSignin, (req, res, next) => {
   const { id, name, phone, email } = req.user;
   const { totalPrice } = req.session.cart;
   const stripe = require('stripe')(stripeSecretKey);
-  console.log('check out REQ ==== ', req.body);
 
   stripe.charges.create(
     {
@@ -50,7 +47,6 @@ router.post('/checkout', requireSignin, (req, res, next) => {
     (err, charge) => {
       // asynchronously called
       if (err) {
-        console.log('ERRor === ', err);
         req.flash('error', err.message);
         return res.redirect('/checkout');
       }
@@ -98,8 +94,6 @@ router.post('/checkout', requireSignin, (req, res, next) => {
                   }
                 ],
                 (err, result) => {
-                  console.log('err === ', err);
-                  console.log('result ==== ', result);
                   res.redirect('/');
                   return;
                 } // END (err, result) => {

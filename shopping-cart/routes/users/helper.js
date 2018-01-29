@@ -8,7 +8,6 @@ module.exports = {
 function generateArray(products, items) {
   const arr = [];
   for (let id in items) {
-    // arr.push(Object.assign({}, products[id], items[id]));
     arr.push(Object.assign(items[id], { title: products[id] }));
   }
   return arr;

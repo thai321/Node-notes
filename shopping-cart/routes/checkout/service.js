@@ -24,24 +24,19 @@ function requireSignin(req, res, next) {
 }
 
 function sendTextMessage({ name, moneyFormat, date, phone }) {
-  console.log('arguments1 == ', arguments);
-
   if (phone) {
     client.messages.create({
       to: `+1${phone}`,
       from: '+18312467082',
       body: `TESTING SMS: Hello ${name}! This is the order confirmation of ${moneyFormat}, ${date}. Thank you for your order.`
     });
-    console.log('Sent Text Message sent');
     return 'Sent Text Message sent';
   } else {
-    // console.log('User did not provide a phone number');
     return 'User did not provide a phone number';
   }
 }
 
 function sendMail({ name, email, moneyFormat, date }) {
-  console.log('arguments2 == ', arguments);
   const msg = {
     to: email,
     from: 'TestCheckoutOrder@pathover.com',

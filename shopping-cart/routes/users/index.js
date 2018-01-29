@@ -17,8 +17,6 @@ router.get('/profile', isLoggedIn, (req, res, next) => {
   const { id } = req.user;
   const result = [];
 
-  console.log('OISDJFOJSDIFJOISDJFIOJSDFIOJDIOFIODFSOIJ');
-  console.log('REs body ==== ', req.body);
   req.user
     .getOrders({
       attributes: [
@@ -33,7 +31,6 @@ router.get('/profile', isLoggedIn, (req, res, next) => {
     })
     .then(orders => {
       if (orders.length <= 0) {
-        console.log('HEROIIJOIJJOIJOJIO');
         res.render('user/profile', { empty: true });
       } else {
         async.each(
@@ -49,7 +46,6 @@ router.get('/profile', isLoggedIn, (req, res, next) => {
 }); // END router.get('/profile', isLoggedIn, (req, res, next) => {
 
 router.get('/logout', isLoggedIn, (req, res, next) => {
-  console.log('LOG OUTOUTOUTOTOUOT');
   req.logout();
   res.redirect('/');
 });
@@ -75,19 +71,12 @@ router.post(
     failureFlash: true
   }), // END passport.authenticate('local.signup'
   (req, res, next) => {
-    // console.log('REQ BODY ====== ', req.body);
-    console.log('I am sign up now');
-    console.log('REQ body ==== ', req.body);
     // this funtion will run if sign in success
     if (req.session.oldUrl) {
       const { oldUrl } = req.session;
       req.session.oldUrl = null;
       res.redirect(oldUrl);
     } else {
-      console.log(req.session);
-      console.log(req.isAuthenticated());
-      console.log('Go to /user/profile');
-
       res.redirect('/user/profile');
     }
   } // END (req, res, next)
@@ -110,16 +99,12 @@ router.post(
     failureFlash: true
   }), // END passport.authenticate('local.signin'
   (req, res, next) => {
-    console.log('INDESOIDJFISDJOFSODFDIS  ');
-
     // this funtion will run if sign in success
     if (req.session.oldUrl) {
-      console.log(1);
       const { oldUrl } = req.session;
       req.session.oldUrl = null;
       res.redirect(oldUrl);
     } else {
-      console.log(2);
       res.redirect('/user/profile');
     }
   } // END (req, res, next)

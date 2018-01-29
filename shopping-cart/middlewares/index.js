@@ -4,8 +4,7 @@ const views = require('./views');
 const passport = require('./passport');
 const loggers = require('./loggers');
 
-const isDev =
-  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = app => {
   parsers(app);

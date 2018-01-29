@@ -11,7 +11,6 @@ const { generateArray } = require('./helper');
 // And action to add item to the cart
 router.get('/add-to-cart/:id', (req, res, next) => {
   const productId = req.params.id;
-  console.log('ADD to car', productId);
   const cart = req.session.cart
     ? models.Cart.build(req.session.cart)
     : models.Cart.build();
@@ -48,13 +47,9 @@ router.get('/remove/:id', (req, res, next) => {
 
 // Render the overview of the shopping list (cart view)
 router.get('/shopping-cart', (req, res, next) => {
-  console.log('HELLOOIJ');
   if (!req.session.cart) {
-    console.log('HEREIRJEIJ');
     return res.render('shop/shopping-cart', { products: null, hello: 'hello' });
   }
-
-  console.log('Body ==== ', req.body);
 
   const { cart: { items, products, totalPrice, totalQuantity } } = req.session;
   const productsWithItems = generateArray(products, items);

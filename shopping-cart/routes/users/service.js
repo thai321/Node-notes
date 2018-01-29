@@ -10,8 +10,6 @@ const { generateArray } = require('./helper');
 const moment = require('moment');
 
 function isLoggedIn(req, res, next) {
-  console.log('uehoriwhjieorjoiwjeiorjwioerjiowjerio');
-  console.log(req.isAuthenticated());
   if (req.isAuthenticated()) {
     return next();
   } else {

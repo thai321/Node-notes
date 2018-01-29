@@ -14,8 +14,6 @@ router.get('/', (req, res, next) => {
       productChunks.push(products.slice(i, i + chunkSize));
     }
 
-    console.log(213132);
-
     res.render('shop/index', {
       title: 'Shopping Cart',
       products: productChunks,
