@@ -4,3 +4,7 @@
 - Capturing traffic on a interface: 
   - `tcpdump -i eth0 -s 1500 -w /var/log/name.pcap &`
   - `dumpcap -i eth0 -f "host 192.168.1.15" -w name.pcap`
+
+- Capturing traffic base on OUI:
+  - `/usr/sbin/tcpdump -i eth0 "ether[6:2]==0x0234" and "ether[8:1]==0x56" -s 1500 -w name.pcap &`
+
