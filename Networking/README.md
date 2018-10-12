@@ -10,4 +10,4 @@
   - `/usr/sbin/tcpdump -i eth0 "ether[6:2]==0x0234" and "ether[8:1]==0x56" -s 1500 -w name.pcap &`
 
 - Capturing traffic base on port:
-  -  `#/usr/sbin/tcpdump -i eth0 port 67 or port 547 -s 1500 -w /var/log/asimily/test.pcap &`
+  -  `#/usr/sbin/tcpdump -i eth0 port 67 or port 547 -s 1500 -w name.pcap &`
