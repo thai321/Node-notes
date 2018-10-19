@@ -11,7 +11,7 @@
 
 - Capturing traffic base on a Mac:
   - Ex: Mac Address = `02:34:56:ab:cd:ef`
-  - `/usr/sbin/tcpdump -i eth0 ether host 02:34:56:ab:cd:ef -s 1500 -w name.pcap &
+  - `/usr/sbin/tcpdump -i eth0 ether host 02:34:56:ab:cd:ef -s 1500 -w name.pcap &`
 
 - Capturing traffic base on the ports:
   -  `#/usr/sbin/tcpdump -i eth0 port 67 or port 547 -s 1500 -w name.pcap &`
