@@ -14,4 +14,8 @@
   - `/usr/sbin/tcpdump -i eth0 ether host 02:34:56:ab:cd:ef -s 1500 -w name.pcap &`
 
 - Capturing traffic base on the ports:
-  -  `#/usr/sbin/tcpdump -i eth0 port 67 or port 547 -s 1500 -w name.pcap &`
+  -  `/usr/sbin/tcpdump -i eth0 port 67 or port 547 -s 1500 -w name.pcap &`
+
+- Capturing traffic base on the mac and port:
+  -  `/usr/sbin/tcpdump -i eth0 "(ether host 02:34:56:ab:cd:ef or ether host 0a:bc:de:f0:12:34) and port 1234" -s 1500 -w name.pcap &`
+
