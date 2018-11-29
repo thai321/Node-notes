@@ -1,5 +1,8 @@
 ### Networking traffic capturing
-- Filter and write to pcap file: `tshark -r name-of-pcap-file.pcap -Y "bacnet" -w new_pcap_file.pcap -F pcap`
+- Filter and write to pcap file:
+  - `tshark -r name-of-pcap-file.pcap -Y "bacnet" -w new_pcap_file.pcap -F pcap`
+  - `tshark -r name-of-pcap-file.pcap -Y "ip.addr==x.x.x.x or ip.addr==x.x.x.x" -w new_pcap_file.pcap -F pcap`
+
 - merge all pcap files: `mergecap -w capture_name.pcap *other_name*`
 - Capturing traffic on an interface: 
   - `tcpdump -i eth0 -s 1500 -w /var/log/name.pcap &`
