@@ -22,3 +22,7 @@
 - Capturing traffic base on the mac and port:
   -  `/usr/sbin/tcpdump -i eth0 "(ether host 02:34:56:ab:cd:ef or ether host 0a:bc:de:f0:12:34) and port 1234" -s 1500 -w name.pcap &`
 
+- Capturing traffic base on the ip ranges:
+  - Ex: 10.53.64.65 to 10.53.64.94
+  -  `/usr/sbin/tcpdump -i eno8 net 10.53.64.64/28 or net 10.53.64.80/28 -s 1500 -w name &`
+
